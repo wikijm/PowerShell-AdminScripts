@@ -1,10 +1,10 @@
 ﻿#requires -version 2
 <#
 .SYNOPSIS
-  Create Hyper-V VM with an input .CSV file
+  Delete Hyper-V VM with an input .CSV file
 
 .DESCRIPTION
-  Create Hyper-V Virtual Machines with an input .CSV file (contains Name;DiskCapacityInGB;Generation;CPUNb;StartupRAMinMB;MinimumRAMinMB;SwitchName)
+  Delete Hyper-V Virtual Machines with an input .CSV file (contains Name;DiskCapacityInGB;Generation;CPUNb;StartupRAMinMB;MinimumRAMinMB;SwitchName)
 
 .INPUTS
  .CSV file selected by user during the script
@@ -38,7 +38,7 @@ $sScriptVersion = "2.0"
 $ScriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 
 # Log file creation, similar to $ScriptDir\[SCRIPTNAME]_[YYYY_MM_DD].log
-$ActualDate = Get-Date -uformat %Y_%m_%d
+$ActualDate = Get-Date -uformat % Y_% m_% d
 $ScriptLogFile = "$ScriptDir\$([System.IO.Path]::GetFileNameWithoutExtension($MyInvocation.MyCommand.Definition))" + "_" + $ActualDate + ".log"
 
 # Declare Environment and Hyper-V parameters

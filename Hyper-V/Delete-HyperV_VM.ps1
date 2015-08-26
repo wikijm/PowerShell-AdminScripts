@@ -1,10 +1,10 @@
 ﻿#requires -version 2
 <#
 .SYNOPSIS
-  Create Hyper-V VM with an input .CSV file
+  Delete Hyper-V VM with an input .CSV file
 
 .DESCRIPTION
-  Create Hyper-V Virtual Machines with an input .CSV file (contains Name;DiskCapacityInGB;Generation;CPUNb;StartupRAMinMB;MinimumRAMinMB;SwitchName)
+  Delete Hyper-V Virtual Machines with an input .CSV file (contains Name;DiskCapacityInGB;Generation;CPUNb;StartupRAMinMB;MinimumRAMinMB;SwitchName)
 
 .INPUTS
  .CSV file selected by user during the script
@@ -16,8 +16,7 @@
   Version:        1.0
   Author:         ALBERT Jean-Marc
   Creation Date:  26/08/2015
-  Purpose/Change: 2015.08.24 - ALBERT Jean-Marc - Initial script development
-				  2015.08.26 - ALBERT Jean-Marc - Replace .CSV fixed name per file dialog selection
+  Purpose/Change: 2015.08.26 - ALBERT Jean-Marc - Initial script development
                                                  
   
 .EXAMPLE
@@ -32,7 +31,7 @@ $ErrorActionPreference = "SilentlyContinue"
 #----------------------------------------------------------[Declarations]----------------------------------------------------------
 
 #Script Version
-$sScriptVersion = "2.0"
+$sScriptVersion = "1.0"
 
 #Write script directory path on "ScriptDir" variable
 $ScriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
@@ -43,10 +42,6 @@ $ScriptLogFile = "$ScriptDir\$([System.IO.Path]::GetFileNameWithoutExtension($My
 
 # Declare Environment and Hyper-V parameters
 $VMLoc = "E:\Hyper-V\"
-$NetworkSwitch1 = "Externe"
-$NetworkSwitch1Type = "Public"
-$NetworkSwitch2 = "LAN 192.168.1.0"
-$NetworkSwitch2Type = "Private"
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 function Stop-TranscriptOnLog
