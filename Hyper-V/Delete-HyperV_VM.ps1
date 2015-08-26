@@ -83,57 +83,26 @@ Start-Transcript $ScriptLogFile | Out-Null
 # Import CSV file
 [System.Windows.Forms.MessageBox]::Show(
 "
-Select on this window the CSV file who contains VM parameters.
+Select on this window the CSV file who contains VM names.
 Its content must be similar to:
   
-Name;DiskCapacityInGB;Generation;CPUNb;StartupRAMinMB;MinimumRAMinMB;SwitchName			(Required line)
-VM01;200;2;2;1024;512;LAN 192.168.1.0
-VM02;200;2;2;1024;512;LAN 192.168.1.0
-VM03;200;2;2;1024;512;LAN 192.168.1.0
-", "VM parameters list", 0, [Windows.Forms.MessageBoxIcon]::Question)
+Name			(Required line)
+VM01
+VM02
+VM03
+", "VM list", 0, [Windows.Forms.MessageBoxIcon]::Question)
 
 $CSVInputFile = Select-FileDialog -Title "Select CSV file" -Filter "CSV File (*.csv) |*.csv"
 
 # Import VM parameters list
 $csvValues = Import-Csv $CSVInputFile -Delimiter ';'
 
-
-# Loop to handle Virtual Machine generation & launch
-foreach ($line in $csvValues)
+# Delete Virtual Machines
+foreach ($VMList in $VMList)
 {
 	$VMName = $VMList.Name
-	$DiskCapacityinGB = $VMList.DiskCapacityInGB
-	[int64]$DiskCapacity = 1GB*$DiskCapacityinGB
-	$Generation = $VMList.Generation
-	$CPU = $VMList.CPUNb
-	$MemoryStartupBytes = $VMList.StartupRAMinMB
-	$MemoryMinimumBytes = $VMList.MinimumRAMinMB
-	[int64]$startupmem = 1MB*$MemoryStartupBytes
-	[int64]$minimummem = 1MB*$MemoryMinimumBytes
-	$SwitchName = $VMList.SwitchName
-	
-	# Create Virtual Machines & VHDX
-	New-VHD -Path "$VMLoc\$VMName\Virtual Hard Disks\$VMName.vhdx" -SizeBytes $DiskCapacity -Dynamic
-	New-VM -Path $VMLoc -Name $VMName -Generation $Generation -MemoryStartupBytes $startupmem -VHDPath "$VMLoc\$VMName\Virtual Hard Disks\$VMName.vhdx" -SwitchName $SwitchName
-	Set-VMProcessor –VMName $VMName –count $CPU
-	Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $true -StartupBytes $startupmem -MinimumBytes $minimummem
-}
-
-$OUTPUT = [System.Windows.Forms.MessageBox]::Show("VM were create well. Would you like to launch them?", "Ended VM creation", 4, [Windows.Forms.MessageBoxIcon]::Question)
-if ($OUTPUT -eq "YES")
-{
-	# Import CSV file
-	$VMList = Import-Csv $CSVVMConfigFile -delimiter ';'
-	# Start all created VM
-	foreach ($VMList in $VMList)
-	{
-		$VMName = $VMList.Name
-		Start-VM $VMName
-	}
-}
-else
-{
-	[System.Windows.Forms.MessageBox]::Show("Created VM were not started.", "Ended VM creation", 0, [Windows.Forms.MessageBoxIcon]::Information)
+	# Stop, Delete VM & VHDX
+	Get-VM $VMName | %{ Stop-VM -VM $_ -Force; Remove-VM -vm $_ -Force; Remove-Item -Path $_.Path -Recurse -Force }
 }
 
 # Get VM
