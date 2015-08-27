@@ -4,7 +4,7 @@
   Delete Hyper-V VM with an input .CSV file
 
 .DESCRIPTION
-  Delete Hyper-V Virtual Machines with an input .CSV file (contains Name;DiskCapacityInGB;Generation;CPUNb;StartupRAMinMB;MinimumRAMinMB;SwitchName)
+  Delete Hyper-V Virtual Machines listed on an input .CSV file (contains Name)
 
 .INPUTS
  .CSV file selected by user during the script
@@ -102,7 +102,7 @@ foreach ($VMList in $VMList)
 {
 	$VMName = $VMList.Name
 	# Stop, Delete VM & VHDX
-	Get-VM $VMName | %{ Stop-VM -VM $_ -Force; Remove-VM -vm $_ -Force; Remove-Item -Path $_.Path -Recurse -Force }
+	Get-VM $VMName | %{ Stop-VM -VM $_ -Force; Remove-VM -VM $_ -Force; Remove-Item -Path $_.Path -Recurse -Force }
 }
 
 # Get VM
