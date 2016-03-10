@@ -6,6 +6,8 @@ Differents PowerShell scripts that could automatize and help to manage Windows S
 * Exchange
 * FSRM
 * Hyper-V
+* Prepare Server (global)
 
 Eventually, you can find scripts related to workstations, like :
 * Outlook
+* Security (submit suspicious files to malwr.com for now)
