@@ -10,4 +10,5 @@ Differents PowerShell scripts that could automatize and help to manage Windows S
 
 Eventually, you can find scripts related to workstations, like :
 * Outlook
-* Security (submit suspicious files to malwr.com for now)
+* Security (submit suspicious files to malwr.com)
+* Manage local accounts and groups (create Admin local account)
