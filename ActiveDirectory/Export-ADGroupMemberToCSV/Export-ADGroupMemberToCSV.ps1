@@ -1,6 +1,3 @@
-$GroupName = ""
-Get-ADGroupMember -Identity $GroupName | Select name,objectClass,SamAccountName | Export-CSV C:\exportfile.csv -NoType -Force
-
 #requires -version 2
 <#
 .SYNOPSIS  
@@ -21,6 +18,7 @@ Get-ADGroupMember -Identity $GroupName | Select name,objectClass,SamAccountName 
 #>
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
 #Set Error Action to Silently Continue
+Add-Type -AssemblyName System.Windows.Forms
 $ErrorActionPreference = "SilentlyContinue"
 
 #----------------------------------------------------------[Declarations]----------------------------------------------------------
@@ -37,7 +35,7 @@ $CSVExport = ""
 
 #------------------------------------------------------------[Actions]-------------------------------------------------------------
 
-Get-ADGroupMember -Identity $ADGroupName | Select name,objectClass,SamAccountName | Export-CSV $CSVExport -NoType -Force
+Get-ADGroupMember -Identity $ADGroupName | Select-Object name,objectClass,SamAccountName | Export-CSV $CSVExport -NoType -Force
 
 # Show an information message
 [System.Windows.Forms.MessageBox]::Show("All .pst from $PSTfolder were imported to Outlook" , "Information" , 0, [Windows.Forms.MessageBoxIcon]::Information)
