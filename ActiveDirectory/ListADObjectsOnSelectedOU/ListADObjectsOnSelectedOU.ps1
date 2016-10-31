@@ -1,37 +1,39 @@
-﻿#requires -version 2
+#requires -version 2
 <#
-.SYNOPSIS
-  List all AD Objects on a selected OU, and export results into a CSV
+    .SYNOPSIS
+    List all AD Objects on a selected OU, and export results into a CSV
 
-.DESCRIPTION
-  List all AD objects on a graphically selected OU, and export results into a CSV (CommonName and Description)
+    .DESCRIPTION
+    List all AD objects on a graphically selected OU, and export results into a CSV (CommonName and Description)
 
-.INPUTS
-  User Interface
+    .INPUTS
+    User Interface
 
-.OUTPUTS
-   Create transcript log file similar to $ScriptDir\[SCRIPTNAME]_[YYYY_MM_DD]_[HHhMMmSSs].log
-   Create a list of AD Objects, similar to $ScriptDir\[SCRIPTNAME]_FoundADObjects_[YYYY_MM_DD]_[HHhMMmSSs].csv
+    .OUTPUTS
+    Create transcript log file similar to $ScriptDir\[SCRIPTNAME]_[YYYY_MM_DD]_[HHhMMmSSs].log
+    Create a list of AD Objects, similar to $ScriptDir\[SCRIPTNAME]_FoundADObjects_[YYYY_MM_DD]_[HHhMMmSSs].csv
    
    
-.NOTES
-  Version:        1.1
-  Author:         ALBERT Jean-Marc
-  Creation Date:  15/07/2015
-  Purpose/Change: 1.0 - 2015.07.15 - ALBERT Jean-Marc - Initial script development
+    .NOTES
+    Version:        1.1
+    Author:         ALBERT Jean-Marc
+    Creation Date:  15/07/2015
+    Purpose/Change: 1.0 - 2015.07.15 - ALBERT Jean-Marc - Initial script development
                   1.1 - 2015.07.16 - ALBERT Jean-Marc - Optimize code (minification)
                   1.2 - 2015.07.17 - ALBERT Jean-Marc - Add sAMAccountName and homedirectory to "Get-ADObject parameters"
                   1.3 - 2015.09.12 - ALBERT Jean-Marc - Use functions defined on external .ps1 files
+                  1.4 - 2016.10.31 - ALBERT Jean-Marc - Add missing .NET Assembly and replace $global:streamWriter per $script:streamWriter
                   
                                                   
-.SOURCES
+    .SOURCES
   
   
-.EXAMPLE
-  <None>
+    .EXAMPLE
+    <None>
 #>
 
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
+Add-Type -AssemblyName System.Windows.Forms
 Set-StrictMode -version Latest
 
 $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
@@ -49,7 +51,7 @@ $addsFunctions = "$scriptPath\utilities\ADDS.ps1"
 #----------------------------------------------------------[Declarations]----------------------------------------------------------
 
 $scriptName = [System.IO.Path]::GetFileName($scriptFile)
-$scriptVersion = "1.3"
+$scriptVersion = "1.4"
 
 if(!(Test-Path $logDirectoryPath)) {
     New-Item $logDirectoryPath -type directory | Out-Null
@@ -58,7 +60,7 @@ if(!(Test-Path $logDirectoryPath)) {
 $logFileName = "Log_" + $launchDate + ".log"
 $logPathName = "$logDirectoryPath\$logFileName"
 
-$global:streamWriter = New-Object System.IO.StreamWriter $logPathName
+$script:streamWriter = New-Object System.IO.StreamWriter $logPathName
 
 #Define CSV file export of AD Group objects
 $CSVExportADObjects = "$ScriptPath\$scriptFile" + "_" + "FoundADObjects" + "_" + $launchDate + ".csv"
@@ -73,8 +75,8 @@ $CSVExportADObjects = "$ScriptPath\$scriptFile" + "_" + "FoundADObjects" + "_" +
 
 #----------------------------------------------------------[Execution]----------------------------------------------------------
 
-Start-Log -scriptName $scriptName -scriptVersion $scriptVersion -streamWriter $global:streamWriter
-cls
+Start-Log -scriptName $scriptName -scriptVersion $scriptVersion -streamWriter $script:streamWriter
+Clear-Host
 Write-Host "================================================================================================"
 
 # Prerequisites
@@ -93,10 +95,10 @@ Write-Host "====================================================================
  Write-Progress -Activity "Starting GUI to select OU" -status "Running..." -id 1 
  # Call OnApplicationLoad to initialize
    If((OnApplicationLoad) -eq $true) {
-	     #Call the form
-	     Call-AD_OU_select_pff | Out-Null
-	     #Perform cleanup
-	     OnApplicationExit
+       #Call the form
+       Call-AD_OU_select_pff | Out-Null
+       #Perform cleanup
+       OnApplicationExit
                                      }
 
  # Show selected OU on a messagebox
@@ -106,7 +108,7 @@ Write-Host "====================================================================
  # Writing informations in the log file
  Write-Progress -Activity "Write informations in the log file" -status "Running..." -id 1
  
- End-Log -streamWriter $global:streamWriter
+ End-Log -streamWriter $script:streamWriter
  Stop-ScriptMessageBox
  notepad $logPathName
- cls
+ Clear-Host
