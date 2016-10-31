@@ -1,4 +1,4 @@
-﻿#requires -version 2
+#requires -version 2
 <#
 .SYNOPSIS
   Collect ADCS information, export results into a HTML report and send it by mail
@@ -14,10 +14,11 @@
    
    
 .NOTES
-  Version:        1.0
+  Version:        1.1
   Author:         ALBERT Jean-Marc
   Creation Date:  01/09/2015
   Purpose/Change: 1.0 - 2015.09.01 - ALBERT Jean-Marc - Initial script development
+                  1.1 - 2016.10.31 - ALBERT Jean-Marc - Replace alias used instead of command name, and " per ', and multiple enhancement
 
 
   
@@ -35,15 +36,16 @@
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
 
 #Get input strings
+[CmdletBinding()]
 param(
 [string] $computername = "$ENV:COMPUTERNAME",
-[string] $reportfile = "$ScriptDir\$([System.IO.Path]::GetFileNameWithoutExtension($MyInvocation.MyCommand.Definition))" + "_" + $SystemDate + "_" + $SystemTime + ".html",
-[string] $cert_path = "C:\Windows\System32\certsrv\CertEnroll",
-[string] $crl_root_filename = "domain.crl",
-[string] $crl_sub_filename = "domain-sub.crl",
-[string] $monthQtyFail = "6",
-[string] $monthQtyPend = "1",
-[string] $monthQtyExpir = "3"
+[string] $reportfile = "$ScriptDir\$([System.IO.Path]::GetFileNameWithoutExtension($MyInvocation.MyCommand.Definition))" + '_' + $SystemDate + '_' + $SystemTime + '.html',
+[string] $cert_path = "$env:windir\System32\certsrv\CertEnroll",
+[string] $crl_root_filename = 'domain.crl',
+[string] $crl_sub_filename = 'domain-sub.crl',
+[string] $monthQtyFail = '6',
+[string] $monthQtyPend = '1',
+[string] $monthQtyExpir = '3'
 )
 
 
@@ -51,7 +53,7 @@ param(
 #----------------------------------------------------------[Declarations]----------------------------------------------------------
 
 #Script Version
-$sScriptVersion = "1.0"
+$sScriptVersion = '1.1'
 
 #Write script directory path on "ScriptDir" variable
 $ScriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
@@ -64,11 +66,21 @@ $SystemDate = Get-Date -uformat %Y.%m.%d
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
  
 #Send mail function
-Function send_mail([string]$message,[string]$subject) {
-$emailFrom = "supervision@domain.local"
-$emailCC = "jean-marc.albert@domain.com"
-$emailTo = "jean-marc.albert@domain.com"
-$smtpServer = "smtp.domain.com"
+Function script:send_mail {
+
+  [CmdletBinding()]
+  param
+  (
+    [string]
+    $message,
+
+    [string]
+    $subject
+  )
+$emailFrom = 'supervision@domain.local'
+$emailCC = 'jean-marc.albert@domain.com'
+$emailTo = 'jean-marc.albert@domain.com'
+$smtpServer = 'smtp.domain.com'
 Send-MailMessage -SmtpServer $smtpServer -To $emailTo -Cc $emailCC -From $emailFrom -Subject $subject -Body $message -BodyAsHtml -Priority High
 }
 
@@ -82,25 +94,25 @@ $totalTime.Start()
  
 #Credits
 Write-Host
-Write-Host "ADCS Certificate Expiration Report Tool " -ForegroundColor "Yellow"
+Write-Host 'ADCS Certificate Expiration Report Tool ' -ForegroundColor 'Yellow'
 Write-Host
-if(Get-Module -ListAvailable -Name PSPKI | Where-Object { $_.name -eq "PSPKI" })
+if(Get-Module -ListAvailable -Name PSPKI | Where-Object { $_.name -eq 'PSPKI' })
 {
 #Import PSPKI PowerShell module
-if(Get-Module -Name PSPKI | Where-Object { $_.name -eq "PSPKI" })
+if(Get-Module -Name PSPKI | Where-Object { $_.name -eq 'PSPKI' })
 {
-Write-Host "PSPKI PowerShell module already imported…" -ForegroundColor "Yellow"
+Write-Host 'PSPKI PowerShell module already imported…' -ForegroundColor 'Yellow'
 }
 else
 {
-Write-Host "Importing PSPKI PowerShell module…" -ForegroundColor "Yellow"
+Write-Host 'Importing PSPKI PowerShell module…' -ForegroundColor 'Yellow'
 Import-Module -Name PSPKI
 }
 Write-Host
  
  
 #Set variables
-Write-Host "Setting variables…" -ForegroundColor "Yellow"
+Write-Host 'Setting variables…' -ForegroundColor 'Yellow'
 Write-Host
 $caname = $computername.ToLower()
 $domaindns = $ENV:USERDNSDOMAIN.ToLower()
@@ -120,14 +132,14 @@ $htmlpost = "
 <P>---- Certificate informations retrived from $caname.$domaindns ----</P>
 <P>-------------------------------------------------------------------------------------------------</P>
 "
-$htmllinebreak = "<br>"
+$htmllinebreak = '<br>'
 $htmltitle = "Certificate information from $caname.$domaindns"
 $htmlpreadcsfailed ="<font face='Calibri' color='black'><i><b><P>The following list represent failed requests during last $monthQtyFail months</P>"
 $adcsfailed = Get-CertificationAuthority "$caname.$domaindns" | Get-FailedRequest -Filter "Request.SubmittedWhen -gt $(($todaysdate).AddMonths($monthQtyFailMinus))" | ConvertTo-HTML -Fragment -Property RequestID,Request.RequesterName,Request.SubmittedWhen,Request.CommonName
 $htmlpreadcspending ="<font face='Calibri' color='black'><i><b><P>The following list represent pending requests</P>"
 $adcspending = Get-CertificationAuthority "$caname.$domaindns" | Get-PendingRequest | ConvertTo-HTML -Fragment -Property RequestID,Request.RequesterName,Request.SubmittedWhen,Request.CommonName
 $htmlpreadcsexpired = "<P><font face='Calibri' color='black'><i><b><P>The following certificates expire before $findaldate (MM/DD/YYYY)</P>"
-$adcsexpired = Get-CertificationAuthority "$caname.$domaindns" | Get-IssuedRequest -Filter "NotAfter -ge $($todaysdate)", "NotAfter -le $(($todaysdate).AddMonths($monthQtyExpir))" | where-object {$_.CertificateTemplate -notmatch "User|EFS|Client-Server-DA-Authentication"} | ConvertTo-HTML -Property RequestID,RequesterName,CommonName,CertificateTemplate,NotBefore,NotAfter -Fragment
+$adcsexpired = Get-CertificationAuthority "$caname.$domaindns" | Get-IssuedRequest -Filter "NotAfter -ge $($todaysdate)", "NotAfter -le $(($todaysdate).AddMonths($monthQtyExpir))" | where-object {$_.CertificateTemplate -notmatch 'User|EFS|Client-Server-DA-Authentication'} | ConvertTo-HTML -Property RequestID,RequesterName,CommonName,CertificateTemplate,NotBefore,NotAfter -Fragment
 
 #Generate report
 $a = "<HTML><HEAD>
@@ -139,7 +151,7 @@ table td {font-family:verdana,arial,sans-serif;font-size:12px;border-width: 1px;
 </style>
 </HEAD><body>"
  
-Write-Host "Generating report…" -ForegroundColor "Yellow"
+Write-Host 'Generating report…' -ForegroundColor 'Yellow'
 Write-Host
 
 ConvertTo-Html -Body "$htmlpre $htmlpreadcsfailed $adcsfailed $htmlpreadcspending $adcspending $htmllinebreak $htmlpreadcsexpired $adcsexpired $htmlpost" -head $a | Out-File -FilePath $reportfile
@@ -149,7 +161,7 @@ $message = gc $reportfile
 send_mail $message "Certificate expiration report $todaysdate (MM/DD/YYYY) ($caname)"
  
 #Open report
-Write-Host "Opening report…" -ForegroundColor "Yellow"
+Write-Host 'Opening report…' -ForegroundColor 'Yellow'
 Write-Host
 #Invoke-Item $reportfile
  
@@ -157,14 +169,14 @@ Write-Host
 }
 else
 {
-Write-Host "PSPKI is not installed. Please install it from http://pspki.codeplex.com/ " -ForegroundColor "Yellow"
+Write-Host 'PSPKI is not installed. Please install it from http://pspki.codeplex.com/ ' -ForegroundColor 'Yellow'
 Write-Host
 }
  
 #Stop stopwatch
 $totalTime.Stop()
 $ts = $totalTime.Elapsed
-$totalTime = [system.String]::Format("{0:00}:{1:00}:{2:00}",$ts.Hours, $ts.Minutes, $ts.Seconds)
+$totalTime = [system.String]::Format('{0:00}:{1:00}:{2:00}',$ts.Hours, $ts.Minutes, $ts.Seconds)
 Write-Host "Process total time: $totalTime" -ForegroundColor Yellow
 Write-Host
 
