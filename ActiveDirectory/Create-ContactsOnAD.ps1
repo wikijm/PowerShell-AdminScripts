@@ -70,15 +70,15 @@ Sélectionner dans cette fenêtre le fichier contenant :
 
 Le fichier doit être de la forme suivante :
 
-Prenom	NOM	Mail				Mobile		Titre		Service			Bureau	Societe		Adresse				Ville	CP		TelSociete	FaxSociete
-John	Doe	john.doe@dom.com	0601234567	Admin Sys	IT				1		Microsoft	123 Rue des lilas	Paris	75001	0401234567	0401234444
-Jane 	Roe jane.roe@dom.com	0701234567	DevOps		Developpment	2 		Apple 		456 Allée des roses Lyon	69001	0489012345	0489104444
+Prenom	NOM	Mail	Mobile	Titre	Service	Bureau	Societe	Adresse	Ville	CP	TelSociete	FaxSociete
+John	Doe	john.doe@dom.com	0601234567	Admin Sys	IT	1	Microsoft	123 Rue des lilas	Paris	75001	0401234567	0401234444
+Jane 	Roe	jane.roe@dom.com	0701234567	DevOps	Developpment	2	Apple	456 Allée des roses	Lyon	69001	0489012345	0489104444
 
 ", "Office 365 - Ajout de contact", 0, [Windows.Forms.MessageBoxIcon]::Question)
 
 # Import list of users and related sharedmailbox and rights
 $CSVInputFile = Select-FileDialog -Title 'Select CSV file' -Filter 'Fichier CSV (*.csv) |*.csv'
-$csvValues = Import-Csv $CSVInputFile -Delimiter ';'
+$csvValues = Import-Csv $CSVInputFile -Delimiter ';' -Encoding UTF8
 #endregion Import information coming from input .CSV file
 
 #region Apply modification
