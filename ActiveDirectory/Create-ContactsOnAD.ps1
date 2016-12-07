@@ -1,7 +1,8 @@
 Add-Type -AssemblyName System.Windows.Forms
 
 $PathDesktop = 'C:' + $env:HOMEPATH + '\Desktop'
-$ContactOU = 'OU=Contacts,OU=Users,DC=domain,DC=com'
+$ContactOU = 'OU=Externes,OU=Contacts,OU=Utilisateurs,DC=intranet,DC=mielmut,DC=fr'
+$DomainController = 'DIANA'
 
 function Select-FileDialog
 {
@@ -70,15 +71,15 @@ Sélectionner dans cette fenêtre le fichier contenant :
 
 Le fichier doit être de la forme suivante :
 
-Prenom	NOM	Mail	Mobile	Titre	Service	Bureau	Societe	Adresse	Ville	CP	TelSociete	FaxSociete
-John	Doe	john.doe@dom.com	0601234567	Admin Sys	IT	1	Microsoft	123 Rue des lilas	Paris	75001	0401234567	0401234444
-Jane 	Roe	jane.roe@dom.com	0701234567	DevOps	Developpment	2	Apple	456 Allée des roses	Lyon	69001	0489012345	0489104444
+Prénom	NOM	Mail
+John	DOE	john.doe@dom.com
+Jane	ROE	jane.roe@dom.com
 
 ", "Office 365 - Ajout de contact", 0, [Windows.Forms.MessageBoxIcon]::Question)
 
 # Import list of users and related sharedmailbox and rights
 $CSVInputFile = Select-FileDialog -Title 'Select CSV file' -Filter 'Fichier CSV (*.csv) |*.csv'
-$csvValues = Import-Csv $CSVInputFile -Delimiter ';' -Encoding UTF8
+$csvValues = Import-Csv $CSVInputFile -Delimiter ';'
 #endregion Import information coming from input .CSV file
 
 #region Apply modification
@@ -87,7 +88,8 @@ foreach ($line in $csvValues)
 	$UserFirstName = $line.'Prenom'
 	$UserLASTNAME = $line.'Nom'.ToUpper()
 	$UserName = $UserFirstName + ' ' + $UserLASTNAME
-	$UserMailAddress = $line.Mail
+	$UserDescription = $line.'Description'
+	$UserMailAddress = $line.'Mail'
 	$UserMobile = $line.'Mobile'
 	$UserTitle = $line.'Titre'
 	$UserDepartment = $line.'Service'
@@ -95,17 +97,17 @@ foreach ($line in $csvValues)
 	$UserCompanyName = $line.'Societe'
 	$UserCompanyAddress = $line.'Adresse'
 	$UserCompanyCity = $line.'Ville'
-	$UserCompanyPostalCode = $line.CP
+	$UserCompanyPostalCode = $line.'CP'
 	$UserCompanyPhoneLine = $line.'TelSociete'
 	$UserCompanyFax = $line.'FaxSociete'
 	
 	Write-Host 'Création du contact' $UserName $UserMailAddress $UserMobile	$UserTitle	$UserDepartment	$UserCompanyOffice $UserCompanyName	$UserCompanyAddress	$UserCompanyCity	$UserCompanyPostalCode	$UserCompanyPhoneLine	$UserCompanyFax
-	New-ADObject -Type Contact -Name $UserName -Path $ContactOU -OtherAttributes @{ 'displayName' = $UserName; 'mail' = $UserMailAddress; 'proxyAddresses' = $UserMailAddress; 'givenName' = $UserFirstName; 'sn' = $UserLASTNAME; 'physicalDeliveryOfficeName' = $UserCompanyOffice; 'telephoneNumber' = $UserCompanyPhoneLine; 'mobile' = $UserMobile; 'facsimileTelephoneNumber' = $UserCompanyFax; 'streetAddress' = $UserCompanyAddress; 'l' = $UserCompanyCity; 'postalCode' = $UserCompanyPostalCode; 'c' = 'FR'; 'Title' = $UserTitle; 'department' = $UserDepartment; 'company' = $UserCompanyName }
+	New-ADObject -Type Contact -Server $DomainController -Name $UserName -Path $ContactOU -OtherAttributes @{ 'displayName' = $UserName; 'description' = $UserDescription; 'mail' = $UserMailAddress; 'proxyAddresses' = $UserMailAddress; 'givenName' = $UserFirstName; 'sn' = $UserLASTNAME; 'physicalDeliveryOfficeName' = $UserCompanyOffice; 'telephoneNumber' = $UserCompanyPhoneLine; 'mobile' = $UserMobile; 'facsimileTelephoneNumber' = $UserCompanyFax; 'streetAddress' = $UserCompanyAddress; 'l' = $UserCompanyCity; 'postalCode' = $UserCompanyPostalCode; 'c' = 'FR'; 'Title' = $UserTitle; 'department' = $UserDepartment; 'company' = $UserCompanyName }
 }
 #endregion Apply modification
 
 #region Show MessageBox to confirm action
 [Windows.Forms.MessageBox]::Show(
-	"Action menée avec succès
+	"Action menée avec succès.
 ", "ActiveDirectory - Ajout de contact", 0, [Windows.Forms.MessageBoxIcon]::Information)
 #endregion Show MessageBox to confirm action
