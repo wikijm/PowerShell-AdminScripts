@@ -1,0 +1,3 @@
+Prenom;NOM;Mail;Mobile;Titre;Service;Bureau;Societe;Adresse;Ville;CP;TelSociete;FaxSociete
+John;Doe;john.doe@dom.com;601234567;Admin Sys;IT;1;Microsoft;123 Rue des lilas;Paris;75001;401234567;42
+Jane;Roe;jane.roe@dom.com;701234567;DevOps;Developpment;2;Apple;456 Allée des joncquilles;Lyon;69001;489012345;43
