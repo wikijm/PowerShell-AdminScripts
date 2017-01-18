@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ABConfiguration>
+  <!--DisplayName-->
+  <!--The name displayed in the AddressBook menu (form).-->
+  <DisplayName>CONTOSO LDAP AdressBook</DisplayName>
+  <!--ServerName-->
+  <!--The LDAP address book server address. For example "ldap.contoso.com"-->
+  <ServerName>contoso.dom</ServerName>
+  <!--ServerPort-->
+  <!--The LDAP port to connect to. The standard port for Active Directory is 389.-->
+  <ServerPort>3268</ServerPort>
+  <!--UseSSL-->
+  <!--"True" if a SSL connection is required. The default value is "False".-->
+  <UseSSL>False</UseSSL>
+  <!--UserName-->
+  <!--The Username to use for authenticating in the form of domain\username, UPN or just the username if domain name not applicable or not required. Leave blank if a username and password are not required.-->
+  <Username>username@contoso.dom</Username>
+  <!--Password-->
+  <!--The Password to use for authenticating. This must be a clear text passord. It will be encrypted via CryptoAPI and stored in the AB settings.-->
+  <Password>password</Password>
+  <!--RequireSecurePasswordAuth-->
+  <!--"True" if Secure Password Authentication is required is required. The default value is "False".-->
+  <RequireSecurePasswordAuth>False</RequireSecurePasswordAuth>
+  <!--SearchTimeoutSeconds-->
+  <!--The number of seconds before the search request times out. The default value is 60 seconds.-->
+  <SearchTimeoutSeconds>60</SearchTimeoutSeconds>
+  <!--MaxEntriesReturned-->
+  <!--The maximum number of results returned by a search in this AB. The default value is 100.-->
+  <MaxEntriesReturned>100</MaxEntriesReturned>
+  <!--DefaultSearchBase-->
+  <!--"True" the default search base is to be used. The default value is "True".-->
+  <DefaultSearchBase>True</DefaultSearchBase>
+  <!--CustomSearchBase-->
+  <!--Custom search base in case DefaultSearchBase is set to False.-->
+  <CustomSearchBase></CustomSearchBase>
+  <!--EnableBrowsing-->
+  <!--Indicates whether browsing the AB contens is supported. -->
+  <EnableBrowsing>True</EnableBrowsing>
+</ABConfiguration>
