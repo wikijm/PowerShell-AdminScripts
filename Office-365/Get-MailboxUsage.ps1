@@ -18,15 +18,6 @@ function Invoke-Office365TenantLogoff {
  #Remove-PsSession $session
  }
 
-function Active-MessageCopyForSendItemsOnSharedMailbox {
-    #List SharedMailbox and show MessageCopyForSentAsEnabled and MessageCopyForSendOnBehalfEnabled status
-    $SharedMailboxList = Get-Mailbox | Where-Object {($_.RecipientTypeDetails) -eq 'SharedMailbox'}
-    
-    #Active MessageCopyForSentAsEnabled and MessageCopyForSendOnBehalfEnabled for all SharedMailbox with this parameter defined as 'False'
-    $SharedMailboxList <#| Where-Object {($_.MessageCopyForSentAsEnabled) -eq 'False'}#> | Set-Mailbox -MessageCopyForSentAsEnabled $True
-    $SharedMailboxList <#| Where-Object {($_.MessageCopyForSendOnBehalfEnabled) -eq 'False'}#> | Set-Mailbox -MessageCopyForSendOnBehalfEnabled $True
-}
-
     
 #Connect to Office 365 Tenant
 Invoke-Office365TenantLogon
