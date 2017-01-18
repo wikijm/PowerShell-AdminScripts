@@ -35,7 +35,7 @@ $CSVExport = ""
 
 #------------------------------------------------------------[Actions]-------------------------------------------------------------
 
-Get-ADGroupMember -Identity $ADGroupName | Select-Object name,objectClass,SamAccountName | Export-CSV $CSVExport -NoType -Force
+Get-ADGroupMember -Identity $ADGroupName | Select-Object name,objectClass,SamAccountName | Export-CSV $CSVExport -Encoding UTF8 -NoType -Force
 
 # Show an information message
 [System.Windows.Forms.MessageBox]::Show("All .pst from $PSTfolder were imported to Outlook" , "Information" , 0, [Windows.Forms.MessageBoxIcon]::Information)
