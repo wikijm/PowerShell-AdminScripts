@@ -15,7 +15,7 @@ $MachineDomain = (Get-WmiObject Win32_ComputerSystem).Domain
 #Create the notification object
 $notification = New-Object System.Windows.Forms.NotifyIcon 
 #Define various parts of the notification
-$notification.Icon = [System.Drawing.SystemIcons]::Information
+$notification.Icon = [System.Drawing.SystemIcons]::Error
 $notification.BalloonTipTitle = "Connection error on $MachineDomain"
 $notification.BalloonTipIcon = "Error"
 $title = "Credentials have expired, please reauthenticate by cliking ont this message"
