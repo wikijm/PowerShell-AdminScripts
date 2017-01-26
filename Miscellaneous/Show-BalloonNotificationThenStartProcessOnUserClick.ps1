@@ -18,7 +18,7 @@ $notification = New-Object System.Windows.Forms.NotifyIcon
 $notification.Icon = [System.Drawing.SystemIcons]::Error
 $notification.BalloonTipTitle = "Connection error on $MachineDomain"
 $notification.BalloonTipIcon = "Error"
-$title = "Credentials have expired, please reauthenticate by cliking ont this message"
+$title = "Credentials have expired, please reauthenticate by cliking on this message"
 $notification.BalloonTipText = $title
 
 #Make balloon tip visible when called
