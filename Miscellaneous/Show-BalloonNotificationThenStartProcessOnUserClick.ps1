@@ -27,7 +27,7 @@ $notification.Visible = $True
 ## Register a click event with action to take based on event
 #Balloon message clicked
 register-objectevent $notification BalloonTipClicked BalloonClicked_event -Action {
-    Start-Process 'c:\Program Files\Internet Explorer\iexplore.exe' -ArgumentList 'http://www.google.com' -WindowStyle Maximized -Verb Open
+    Start-Process 'iexplore.exe' -ArgumentList 'http://www.google.com' -WindowStyle Maximized -Verb Open
     #Get rid of the icon after action is taken
     $notification.Dispose()
     } | Out-Null
