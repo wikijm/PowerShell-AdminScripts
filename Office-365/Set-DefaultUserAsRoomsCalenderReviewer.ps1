@@ -15,11 +15,13 @@
    
    
 .NOTES
-  Version:        1.1
+  Version:        1.2
   Author:         ALBERT Jean-Marc
   Creation Date:  10/01/2017 (DD/MM/YYYY)
+  Current Date:	  14/02/2017 (DD/MM/YYYY)
   Purpose/Change: 1.0 - 2017.01.10 - ALBERT Jean-Marc - Initial script development
                   1.1 - 2017.01.10 - ALBERT Jean-Marc - Redesign script with PowerShell-ScriptTemplate.ps1
+		  1.2 - 2017.02.14 - ALBERT Jean-Marc - Add "current date" and "region"
                 
                     
                                                   
@@ -32,7 +34,7 @@
 
 #>
 
-#---------------------------------------------------------[Initialisations]--------------------------------------------------------
+#region ---------------------------------------------------------[Initialisations]--------------------------------------------------------
 Set-StrictMode -version Latest
 
 #Set Error Action to Silently Continue
@@ -41,12 +43,11 @@ $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 $scriptFile = $MyInvocation.MyCommand.Definition
 $launchDate = get-date -f "yyyy.MM.dd-HHhmmmss"
 $logDirectoryPath = $scriptPath + "\" + $launchDate
+#endregion
 
-
-#----------------------------------------------------------[Declarations]----------------------------------------------------------
-
+#region ----------------------------------------------------------[Declarations]----------------------------------------------------------
 $scriptName = [System.IO.Path]::GetFileName($scriptFile)
-$scriptVersion = "1.1"
+$scriptVersion = "1.2"
 
 if(!(Test-Path $logDirectoryPath)) {
     New-Item $logDirectoryPath -type directory | Out-Null
@@ -56,9 +57,9 @@ $logFileName = "Log_" + $launchDate + ".log"
 $logPathName = "$logDirectoryPath\$logFileName"
 
 $global:streamWriter = New-Object System.IO.StreamWriter $logPathName
+#endregion
 
-#-----------------------------------------------------------[functions]------------------------------------------------------------
-
+#region -----------------------------------------------------------[functions]------------------------------------------------------------
 function Start-Log {    
     [CmdletBinding()]  
     Param ([Parameter(Mandatory=$true)][string]$scriptName, [Parameter(Mandatory=$true)][string]$scriptVersion, 
@@ -129,9 +130,9 @@ function Connect-EXOnline {
 function Disconnect-EXOnline {
 	Remove-PSSession -Name "Exchange Online"
 }
+#endregion
 
-#----------------------------------------------------------[Execution]----------------------------------------------------------
-
+#region ----------------------------------------------------------[Execution]----------------------------------------------------------
 Start-Log -scriptName $scriptName -scriptVersion $scriptVersion -streamWriter $global:streamWriter
 cls
 Write-Host "================================================================================================"
@@ -191,3 +192,4 @@ Write-Progress -Activity "Write informations in the log file" -status "Running..
 End-Log -streamWriter $global:streamWriter
 notepad $logPathName
 cls
+#endregion
