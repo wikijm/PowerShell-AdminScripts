@@ -9,10 +9,9 @@ REM		        (5) Package Installer Command Line Options
 REM
 REM  CHANGELOG: v0.1 - 25.01.2017 - Initial write
 REM		           v0.2 - 10.02.2017 - Add ',DesktopViewer' to (4)
-REM	           	v0.3 - 16.02.2017 - Add a verification on WebHelper version (new (2) parameter)
-REM				                             Redefine parameters
-REM						                          	Add version of Citrix package and Citrix DesktopViewer module version on log
-REM
+REM		v0.3 - 16.02.2017 - Add a verification on WebHelper version (new (2) parameter)
+REM				            Redefine parameters
+REM							Add version of Citrix package and Citrix DesktopViewer module version on log
 REM                                                        
 REM  (1) Current version of Citrix package                        
 Set DesiredVersion=14.6.0.12010
