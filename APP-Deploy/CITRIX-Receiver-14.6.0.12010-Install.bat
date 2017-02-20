@@ -4,17 +4,17 @@ REM  VERSION:	0.4
 REM  INPUTS:	(1) Current version of Citrix package                
 REM		        (2) Current Version of Citrix WebHelper module
 REM		        (3) Package Location/Deployment Directory     
-REM      		  (4) Script Logging Directory                  
+REM		        (4) Script Logging Directory                  
 REM		        (5) Package Installer Command Line Options
 REM
 REM  CHANGELOG: v0.1 - 25.01.2017 - Initial write
 REM		v0.2 - 10.02.2017 - Add ',DesktopViewer' to (4)
 REM		v0.3 - 16.02.2017 - Add a verification on WebHelper version (new (2) parameter)
-REM				                  Redefine parameters
-REM							               Add version of Citrix package and Citrix DesktopViewer module version on log
+REM				                Redefine parameters
+REM							          Add version of Citrix package and Citrix DesktopViewer module version on log
 REM		v0.4 - 20.02.2017 - Add few steps to verify Citrix presence, then DesktopViewer version
-REM							               If Citrix present, then check DesktopViewer version
-REM							               If DesktopViewer not present/ with bad version, then uninstall and reinstall Citrix with DesktopViewer
+REM							          If Citrix present, then check DesktopViewer version
+REM							          If DesktopViewer not present/ with bad version, then uninstall and reinstall Citrix with DesktopViewer
 REM
 REM                                                        
 REM  (1) Current version of Citrix package                        
