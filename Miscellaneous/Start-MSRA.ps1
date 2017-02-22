@@ -81,7 +81,7 @@ $Form.controls.Add($labelTicket)
 
 $labelDescription = New-Object system.windows.Forms.Label
 $labelDescription.Text = "Merci de remplir les champs ci-dessous afin de prendre la main
-sur un poste MIEL.
+sur un poste COMPANY.
 
 Tous sont obligatoires."
 $labelDescription.AutoSize = $true
