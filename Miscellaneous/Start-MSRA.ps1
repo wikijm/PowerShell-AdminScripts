@@ -12,30 +12,30 @@ $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
 $form.StartPosition = "CenterScreen"
 $form.MaximizeBox = $false
 $form.MinimizeBox = $false
-$Form.TopMost = $true
+$Form.TopMost = $false
 $Form.Width = 460
 $Form.Height = 305
 
-$StartRC = New-Object system.windows.Forms.Button
-$StartRC.Text = "Lancer contrôle à distance"
-$StartRC.Width = 142
-$StartRC.Height = 52
-$StartRC.Add_MouseClick({
-    $Result = "$env:COMPUTERNAME,$env:USERNAME,$($textBoxutilisateur.Text),$($textBoxComputerName.Text),$($textBoxTicket.Text)"
-	$launchDate + ',' + $launchHour + ',' +$env:COMPUTERNAME + ',' + $env:USERNAME + ',' + $textBoxutilisateur.Text + ',' + $textBoxComputerName.Text + ',' + $textBoxTicket.Text | Out-File -filepath $logPathName -Append -Encoding UTF8
+$buttonStartRC = New-Object system.windows.Forms.Button
+$buttonStartRC.Text = "Lancer contrôle à distance"
+$buttonStartRC.Width = 142
+$buttonStartRC.Height = 52
+$buttonStartRC.Add_MouseClick({
+    $Result = "$env:COMPUTERNAME,$env:USERNAME,$($textBoxUtilisateur.Text),$($textBoxComputerName.Text),$($textBoxTicket.Text)"
+	$launchDate + ',' + $launchHour + ',' +$env:COMPUTERNAME + ',' + $env:USERNAME + ',' + $textBoxUtilisateur.Text + ',' + $textBoxComputerName.Text + ',' + $textBoxTicket.Text | Out-File -filepath $logPathName -Append -Encoding UTF8
     msra.exe /offerRA $textBoxComputerName.Text
 })
-$StartRC.location = new-object system.drawing.point(223,157)
-$StartRC.Font = "Microsoft Sans Serif,10"
-$Form.controls.Add($StartRC)
+$buttonStartRC.location = new-object system.drawing.point(223,157)
+$buttonStartRC.Font = "Microsoft Sans Serif,10"
+$Form.controls.Add($buttonStartRC)
 
-$textBoxutilisateur = New-Object system.windows.Forms.TextBox
-$textBoxutilisateur.Text = "xxxN"
-$textBoxutilisateur.Width = 100
-$textBoxutilisateur.Height = 20
-$textBoxutilisateur.location = new-object system.drawing.point(101,151)
-$textBoxutilisateur.Font = "Microsoft Sans Serif,10"
-$Form.controls.Add($textBoxutilisateur)
+$textBoxUtilisateur = New-Object system.windows.Forms.TextBox
+$textBoxUtilisateur.Text = "xxxN"
+$textBoxUtilisateur.Width = 100
+$textBoxUtilisateur.Height = 20
+$textBoxUtilisateur.location = new-object system.drawing.point(101,151)
+$textBoxUtilisateur.Font = "Microsoft Sans Serif,10"
+$Form.controls.Add($textBoxUtilisateur)
 
 $textBoxComputerName = New-Object system.windows.Forms.TextBox
 $textBoxComputerName.Text = "Uxnnnnnnnnn"
@@ -45,14 +45,14 @@ $textBoxComputerName.location = new-object system.drawing.point(101,189)
 $textBoxComputerName.Font = "Microsoft Sans Serif,10"
 $Form.controls.Add($textBoxComputerName)
 
-$Utilisateur = New-Object system.windows.Forms.Label
-$Utilisateur.Text = "Utilisateur"
-$Utilisateur.AutoSize = $true
-$Utilisateur.Width = 25
-$Utilisateur.Height = 10
-$Utilisateur.location = new-object system.drawing.point(24,151)
-$Utilisateur.Font = "Microsoft Sans Serif,10"
-$Form.controls.Add($Utilisateur)
+$LabelUtilisateur = New-Object system.windows.Forms.Label
+$LabelUtilisateur.Text = "Utilisateur"
+$LabelUtilisateur.AutoSize = $true
+$LabelUtilisateur.Width = 25
+$LabelUtilisateur.Height = 10
+$LabelUtilisateur.location = new-object system.drawing.point(24,151)
+$LabelUtilisateur.Font = "Microsoft Sans Serif,10"
+$Form.controls.Add($LabelUtilisateur)
 
 $LabelComputerName = New-Object system.windows.Forms.Label
 $LabelComputerName.Text = "Poste"
@@ -70,26 +70,26 @@ $textBoxTicket.location = new-object system.drawing.point(98,230)
 $textBoxTicket.Font = "Microsoft Sans Serif,10"
 $Form.controls.Add($textBoxTicket)
 
-$label15 = New-Object system.windows.Forms.Label
-$label15.Text = "Ticket"
-$label15.AutoSize = $true
-$label15.Width = 25
-$label15.Height = 10
-$label15.location = new-object system.drawing.point(22,230)
-$label15.Font = "Microsoft Sans Serif,10"
-$Form.controls.Add($label15)
+$labelTicket = New-Object system.windows.Forms.Label
+$labelTicket.Text = "Ticket"
+$labelTicket.AutoSize = $true
+$labelTicket.Width = 25
+$labelTicket.Height = 10
+$labelTicket.location = new-object system.drawing.point(22,230)
+$labelTicket.Font = "Microsoft Sans Serif,10"
+$Form.controls.Add($labelTicket)
 
-$Description = New-Object system.windows.Forms.Label
-$Description.Text = "Merci de remplir les champs ci-dessous afin de prendre la main
+$labelDescription = New-Object system.windows.Forms.Label
+$labelDescription.Text = "Merci de remplir les champs ci-dessous afin de prendre la main
 sur un poste MIEL.
 
 Tous sont obligatoires."
-$Description.AutoSize = $true
-$Description.Width = 25
-$Description.Height = 10
-$Description.location = new-object system.drawing.point(10,20)
-$Description.Font = "Microsoft Sans Serif,10"
-$Form.controls.Add($Description)
+$labelDescription.AutoSize = $true
+$labelDescription.Width = 25
+$labelDescription.Height = 10
+$labelDescription.location = new-object system.drawing.point(10,20)
+$labelDescription.Font = "Microsoft Sans Serif,10"
+$Form.controls.Add($labelDescription)
 
 $buttonLog = New-Object system.windows.Forms.Button
 $buttonLog.Text = "Log"
