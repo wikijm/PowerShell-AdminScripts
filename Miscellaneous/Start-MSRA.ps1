@@ -19,10 +19,12 @@
   Author:         ALBERT Jean-Marc
   Creation Date:  22/02/2017 (DD/MM/YYYY)
   Purpose/Change: 1.0 - 2017.02.22 - ALBERT Jean-Marc - Initial script development
-  				  1.1 - 2017.02.27 - ALBERT Jean-Marc - Add combobox for Computer and User, thanks to request on Active Directory objects
-				  										Modify logged information thanks to modification somewhat above
-														Move buttons
-														Apply templace to this script
+  		  1.1 - 2017.02.27 - ALBERT Jean-Marc - Add combobox for Computer and User, thanks to request on Active Directory objects
+		  					Modify logged information thanks to modification somewhat above
+							Move buttons
+							Apply templace to this script
+  		  1.2 - 2017.02.27 - ALBERT Jean-Marc - Verify log's first line
+							Add #region to [Execution] region
                                                   
 .SOURCES
   <None>
@@ -50,7 +52,7 @@ Add-Type -AssemblyName System.Windows.Forms
 #region ----------------------------------------------------------[Declarations]----------------------------------------------------------
 
 $scriptName = [System.IO.Path]::GetFileName($scriptFile)
-$scriptVersion = "1.1"
+$scriptVersion = "1.2"
 
 $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 $logFileName = "pmad.log"
@@ -76,8 +78,16 @@ function Set-FirstLine {
 }
 #endregion
 
-#region ----------------------------------------------------------[Execution]----------------------------------------------------------
+#region -----------------------------------------------------------[Execution]----------------------------------------------------------
 
+#region Verify log's first line
+	$logFileFirstLineContent = Get-content $logPathName -First 1
+	if($logFileFirstLineContent -ne $logFileFirstLine){
+    	Set-FirstLine -Path $logPathName -Value $logFileFirstLine 
+	}
+#endregion
+
+#region Generate & show form
 $Form = New-Object system.Windows.Forms.Form
 $Form.Text = "Contrôle à distance"
 $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
@@ -207,5 +217,8 @@ $buttonLog.Add_MouseClick({
 
 [void]$Form.ShowDialog()
 $Form.Dispose()
+#endregion
+
+#endregion
 
 #endregion
