@@ -15,7 +15,7 @@
    
    
 .NOTES
-  Version:        1.1
+  Version:        1.2
   Author:         ALBERT Jean-Marc
   Creation Date:  22/02/2017 (DD/MM/YYYY)
   Purpose/Change: 1.0 - 2017.02.22 - ALBERT Jean-Marc - Initial script development
