@@ -1,0 +1,170 @@
+#requires -version 2
+<#
+.SYNOPSIS
+  <None>
+
+.DESCRIPTION
+  <None>
+
+.INPUTS
+  <None>
+
+.OUTPUTS
+  Fill a log file similar to $ScriptDir\[SCRIPTNAME]_[YYYY_MM_DD]_[HHhMMmSSs].log
+  
+   
+   
+.NOTES
+  Version:          0.1
+  Author:           ALBERT Jean-Marc
+  Creation Date:    22/05/2017 (DD/MM/YYYY)
+  Purpose/Change:   0.1 - 2017.05.22 - ALBERT Jean-Marc - Initial script development
+                    0.2 - 2017.05.23 - ALBERT Jean-Marc - Add GUI auto-close when clicking on principal button
+  				  
+                                                  
+.SOURCES
+  <None>
+  
+  
+.EXAMPLE
+  <None>
+
+#>
+
+#region ---------------------------------------------------------[Initialisations]--------------------------------------------------------
+Set-StrictMode -version Latest
+
+#Set Error Action to Silently Continue
+$ErrorActionPreference = "SilentlyContinue"
+
+$launchDate = get-date -f "dd/MM/yyyy"
+$launchHour = get-date -f "HH:mm:ss"
+
+Add-Type -AssemblyName System.Windows.Forms
+
+#endregion
+
+#region ----------------------------------------------------------[Declarations]----------------------------------------------------------
+
+$scriptName = [System.IO.Path]::GetFileName($scriptFile)
+$scriptVersion = "0.2"
+
+$scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
+$logPathName = "$SourceFolderPath\$logFileName"
+
+$NetworkDriveLetter = 'A:'
+$NetworkDriveLabel = 'Network drive label'
+$NetworkDrivePath = '\\domain.com\folder'
+$NetworkDriveAccountDomain = 'DOMAIN'
+
+#endregion
+
+#region -----------------------------------------------------------[Functions]------------------------------------------------------------
+
+$Script:showWindowAsync = Add-Type -MemberDefinition @"
+[DllImport("user32.dll")]
+public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+"@ -Name "Win32ShowWindowAsync" -Namespace Win32Functions -PassThru
+Function Show-Powershell()
+	{$null = $showWindowAsync::ShowWindowAsync((Get-Process -Id $pid).MainWindowHandle, 10)}
+Function Hide-Powershell()
+	{$null = $showWindowAsync::ShowWindowAsync((Get-Process -Id $pid).MainWindowHandle, 2)}
+
+#endregion
+
+#region -----------------------------------------------------------[Execution]----------------------------------------------------------
+
+#region Mount
+
+#Hide Powershell console
+Hide-Powershell
+
+If (!(Test-Path $NetworkDriveLetter))
+    {
+        #region Generate & show form
+        $Form = New-Object system.Windows.Forms.Form
+        $Form.Text = "COMPANYNAME - Network share '$NetworkDriveLabel'"
+        $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
+        $form.StartPosition = "CenterScreen"
+        $form.MaximizeBox = $false
+        $form.MinimizeBox = $false
+        $Form.TopMost = $true
+        $Form.Width = 460
+        $Form.Height = 240
+
+        $labelDescription = New-Object system.windows.Forms.Label
+        $labelDescription.Text = "Please fill information below in order to access on network share
+        '$NetworkDriveLabel' ($NetworkDriveLetter) and make it available in 'Computer'.
+
+All field are mandatory."
+        $labelDescription.AutoSize = $true
+        $labelDescription.Width = 25
+        $labelDescription.Height = 10
+        $labelDescription.location = new-object system.drawing.point(10,20)
+        $labelDescription.Font = "Microsoft Sans Serif,10"
+        $Form.controls.Add($labelDescription)
+
+
+        $LabelUser = New-Object system.windows.Forms.Label
+        $LabelUser.Text = "User:"
+        $LabelUser.AutoSize = $true
+        $LabelUser.Width = 25
+        $LabelUser.Height = 10
+        $LabelUser.location = new-object system.drawing.point(24,135)
+        $LabelUser.Font = "Microsoft Sans Serif,10"
+        $Form.controls.Add($LabelUser)
+        $textBoxUser = New-Object system.windows.Forms.TextBox
+        $textBoxUser.Text = 'xxxxx'
+        $textBoxUser.Enabled = $true
+        $textBoxUser.Width = 100
+        $textBoxUser.Height = 20
+        $textBoxUser.location = new-object system.drawing.point(130,135)
+        $textBoxUser.Font = "Microsoft Sans Serif,10"
+        $Form.controls.Add($textBoxUser)
+
+        $LabelPassword = New-Object system.windows.Forms.Label
+        $LabelPassword.Text = "Password:"
+        $LabelPassword.AutoSize = $true
+        $LabelPassword.Width = 25
+        $LabelPassword.Height = 10
+        $LabelPassword.location = new-object system.drawing.point(24,160)
+        $LabelPassword.Font = "Microsoft Sans Serif,10"
+        $Form.Controls.Add($LabelPassword)
+        $textBoxPassword = New-Object system.windows.Forms.MaskedTextBox
+        $textBoxPassword.PasswordChar = '*'
+        $textBoxPassword.Enabled = $true
+        $textBoxPassword.Width = 100
+        $textBoxPassword.Height = 20
+        $textBoxPassword.location = new-object system.drawing.point(130,160)
+        $textBoxPassword.Font = "Microsoft Sans Serif,10"
+        $Form.controls.Add($textBoxPassword)
+
+
+        $buttonStartMount = New-Object system.windows.Forms.Button
+        $buttonStartMount.Text = "Access to '$NetworkDriveLabel'"
+        $buttonStartMount.Width = 190
+        $buttonStartMount.Height = 50
+        $buttonStartMount.Add_MouseClick({
+            #Mount network share
+                $NetworkDriveAccount = $NetworkDriveAccountDomain + '\' + $textBoxUser.Text
+                (New-Object -ComObject WScript.Network).MapNetworkDrive($NetworkDriveLetter,$NetworkDrivePath,$true,$NetworkDriveAccount,$textBoxPassword.Text)
+            #Rename it
+                (New-Object -ComObject Shell.Application).NameSpace($NetworkDriveLetter).Self.Name=$NetworkDriveLabel
+            #Open it on a new explorer windows
+                Invoke-Item $NetworkDrivePath
+				$Form.Close()
+
+            })
+        $buttonStartMount.location = new-object system.drawing.point(248,133)
+        $buttonStartMount.Font = "Microsoft Sans Serif,10"
+        $Form.controls.Add($buttonStartMount)
+
+        [void]$Form.ShowDialog()
+        $Form.Dispose()
+#endregion
+     
+    }
+else { 
+        Write-Error -Message "$NetworkDriveLabel ($NetworkDriveLetter) already connected."
+        [Windows.Forms.MessageBox]::Show("$NetworkDriveLabel ($NetworkDriveLetter) already connected.", 'Operation stopped', 0, [Windows.Forms.MessageBoxIcon]::Information)
+}
