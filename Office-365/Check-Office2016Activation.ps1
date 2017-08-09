@@ -1,29 +1,21 @@
 $launchdate = Get-Date -f "yyyy.MM.dd-HHhmmmss"
+$Office2016FolderPath = 'C:\Program Files\Microsoft Office\Office16'
 $CookieFile = 'C:\Users\' + $env:username + '\AppData\Local\Microsoft\Office\16.0\office365ForBusiness.txt'
+$Office365LicenceStatusResult = 'C:\' + $env:HOMEPATH + '\office365forbusinessactstat.txt'
 
 
 function Check-Office365ForBusinessActivation () {
-    C:\Windows\System32\cscript.exe 'C:\Program Files\Microsoft Office\Office16\OSPP.VBS' /dstatus | Out-File $env:temp\office365forbusinessactstat.txt
-    $ActivationStatus = $($Things = $(Get-Content $env:temp\office365forbusinessactstat.txt -raw) `
-                            -replace ":"," =" `
-                            -split "---------------------------------------" `
-                            -notmatch "---Processing--------------------------" `
-                            -notmatch "---Exiting-----------------------------"
-                       $Things | ForEach-Object {
-                       $Props = ConvertFrom-StringData -StringData ($_ -replace '\n-\s+')
-                       New-Object psobject -Property $Props  | Select-Object "SKU ID", "LICENSE NAME", "LICENSE DESCRIPTION", "LICENSE STATUS"
-            })
- 
+    C:\Windows\System32\cscript.exe 'C:\Program Files\Microsoft Office\Office16\OSPP.VBS' /dstatus | Out-File -Force $Office365LicenceStatusResult
+    $ActivationStatus = $(get-content $Office365LicenceStatusResult -ReadCount 24 | foreach { $_ -match "LICENSE STATUS" })
+                        
     $Var = "Office Activated "
-    for ($i=0; $i -le $ActivationStatus.Count-2; $i++) {
-        if ($ActivationStatus[$i]."LICENSE STATUS" -eq "---LICENSED---") {
+        if ($ActivationStatus -match "LICENSE STATUS:  ---LICENSED--- ") {
             $Var = $Var + "OK "
         }
  
     else {
         $Var = $Var + "Bad "
          }
-    }
  
     if ($Var -like "*Bad*") {
         echo "Office Not Activated"
