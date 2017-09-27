@@ -1,4 +1,5 @@
-# USAGE
+<#
+#USAGE
 PS C:\temp\> ./Get-MicrosoftLicenceStatus.ps1 
 
 # RESULT
@@ -6,6 +7,7 @@ PS C:\temp\> ./Get-MicrosoftLicenceStatus.ps1
   ----                                            -------------                        -------------
   Windows(R), Professional edition                55c92734-d682-4d71-983e-d6ec3f16059f Licensed     
   Office 16, Office16ProPlusVL_KMS_Client edition 0ff1ce15-a989-479d-af46-f275c6370663 Licensed     
+#>
 
 $lstat = DATA {
     ConvertFrom-StringData -StringData @'
