@@ -1,8 +1,8 @@
 Add-Type -AssemblyName System.Windows.Forms
 
 $PathDesktop = 'C:' + $env:HOMEPATH + '\Desktop'
-$ContactOU = 'OU=Externes,OU=Contacts,OU=Utilisateurs,DC=intranet,DC=mielmut,DC=fr'
-$DomainController = 'DIANA'
+$ContactOU = 'OU=Contacts,OU=Utilisateurs,DC=contoso,DC=local'
+$DomainController = 'DomainController1'
 
 function Select-FileDialog
 {
